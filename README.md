@@ -4,7 +4,7 @@ You run a hyper-converged **Proxmox VE + Ceph** cluster and want a copy of your 
 
 Proxmox has no built-in, GUI-driven answer for this between two Ceph clusters. This guide walks through the options, explains why **Ceph RBD snapshot mirroring** fits best, and documents a **tested** two-way setup between a home cluster and a single Proxmox node in Azure over a site-to-site VPN, including the things that went wrong.
 
-> Status: work in progress. The setup described here has been built and tested; the guide is being written up.
+> Status: draft. Everything described has been built and tested; a final review of the text is pending.
 
 ## Who this is for
 
@@ -16,13 +16,13 @@ Proxmox has no built-in, GUI-driven answer for this between two Ceph clusters. T
 
 | | |
 |---|---|
-| 1. Options | Stretched cluster, ZFS replication, Proxmox Backup Server sync, RBD mirroring: what each one gives you and costs |
-| 2. Concepts | How RBD snapshot mirroring works: primary and non-primary images, mirror snapshots, peers and directions |
-| 3. Architecture | Network requirements, a single-node DR site, guest networking on the DR side |
-| 4. Setup | Step by step on Proxmox VE 9 / Ceph 20 (Tentacle), one-way then two-way, with a non-root `rbd-mirror` daemon |
-| 5. Failover and failback | Planned and disaster scenarios, with commands that cannot start a guest on the wrong copy |
-| 6. Pitfalls | Problems met in practice, with symptoms, root cause, evidence and fix |
-| 7. Results | What was tested and what happened, including a filesystem corruption and how to avoid it |
+| [1. Options](docs/01-options.md) | Stretched cluster, ZFS replication, Proxmox Backup Server sync, RBD mirroring: what each one gives you and costs |
+| [2. Concepts](docs/02-concepts.md) | How RBD snapshot mirroring works: primary and non-primary images, mirror snapshots, peers and directions |
+| [3. Architecture](docs/03-architecture.md) | Network requirements, a single-node DR site, guest networking on the DR side |
+| [4. Setup](docs/04-setup.md) | Step by step on Proxmox VE 9 / Ceph 20 (Tentacle), one-way then two-way, with a non-root `rbd-mirror` daemon |
+| [5. Failover and failback](docs/05-failover-failback.md) | Planned and disaster scenarios, with commands that cannot start a guest on the wrong copy |
+| [6. Pitfalls](docs/06-pitfalls.md) | Problems met in practice, with symptoms, root cause, evidence and fix |
+| [7. Results](docs/07-results.md) | What was tested and what happened, including a filesystem corruption and how to avoid it |
 
 ## Tested with
 
