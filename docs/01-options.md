@@ -13,7 +13,7 @@ Two numbers frame every option:
 
 One Proxmox cluster, one Ceph cluster, nodes in two places.
 
-- **Proxmox:** cluster membership runs on Corosync, which needs LAN-like latency (a few milliseconds, stable). Over a WAN or a VPN to the cloud, latency spikes cost quorum and nodes get fenced.
+- **Proxmox:** cluster membership runs on Corosync, which the Proxmox documentation describes as very sensitive to latency and sizes for LAN performance (latencies under 5 ms). Over a WAN or a VPN to the cloud, latency spikes cost quorum, and with HA, nodes get fenced.
 - **Ceph:** writes are acknowledged only when every replica has them. Replicas at a remote site put the WAN round trip on **every write**. Ceph has a dedicated *stretch mode*, designed for two nearby data centres with a third site as tie-breaker, still with low latency between them.
 
 **Fits:** two buildings on the same campus, joined by fibre.
@@ -23,7 +23,7 @@ One Proxmox cluster, one Ceph cluster, nodes in two places.
 
 Built into Proxmox and visible in the GUI, it replicates guest disks between nodes on a schedule.
 
-- Works only with **ZFS** local storage, and only **between nodes of the same cluster**.
+- Works only with **ZFS** local storage (the only supported storage type), replicating to **another node of the same cluster**.
 - With Ceph it does not apply: Ceph already replicates inside the cluster, and `pvesr` cannot target another cluster.
 
 The ZFS equivalents for an off-cluster copy (`pve-zsync`, or `zfs send`/`receive` tools such as syncoid) have the same limit: they need ZFS storage, not Ceph.
@@ -53,7 +53,7 @@ A second Ceph cluster at the other site receives a continuous copy of selected i
 
 ### Not disaster recovery: moving guests between clusters
 
-Proxmox can migrate a guest to **another cluster** (`qm remote-migrate` / `pct remote-migrate`, and Proxmox Datacenter Manager). It needs the **source cluster to be running**: useful to move workloads ahead of planned maintenance, useless after the source site is gone.
+Proxmox can migrate a guest to **another cluster** (`qm remote-migrate` / `pct remote-migrate`, marked *experimental* in the documentation, and Proxmox Datacenter Manager). It is a migration: it is started from the source cluster and copies the guest's disks from there at that moment. Useful to move workloads ahead of planned maintenance; no help once the source site is gone.
 
 ## Side by side
 
@@ -88,4 +88,4 @@ Two nodes is not a useful middle ground: two Ceph MONs cannot keep quorum if one
 
 Next: [2. Concepts](02-concepts.md).
 
-References: [Proxmox VE: Cluster Manager](https://pve.proxmox.com/wiki/Cluster_Manager) · [Proxmox VE: Storage Replication](https://pve.proxmox.com/wiki/Storage_Replication) · [Proxmox Backup Server documentation](https://pbs.proxmox.com/docs/) · [Ceph: Stretch Clusters](https://docs.ceph.com/en/latest/rados/operations/stretch-mode/) · [Ceph: RBD Mirroring](https://docs.ceph.com/en/latest/rbd/rbd-mirroring/)
+References: [Proxmox VE: Cluster Manager](https://pve.proxmox.com/pve-docs/chapter-pvecm.html) · [Proxmox VE: Storage Replication](https://pve.proxmox.com/pve-docs/chapter-pvesr.html) · [Proxmox VE: pct remote-migrate](https://pve.proxmox.com/pve-docs/pct.1.html) · [Proxmox VE wiki: PVE-zsync](https://pve.proxmox.com/wiki/PVE-zsync) · [Proxmox Backup Server documentation](https://pbs.proxmox.com/docs/) · [Ceph: Stretch Clusters](https://docs.ceph.com/en/latest/rados/operations/stretch-mode/) · [Ceph: RBD Mirroring](https://docs.ceph.com/en/latest/rbd/rbd-mirroring/)
